@@ -3,8 +3,6 @@ package edu.unicauca.aplimovil.safekids.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,32 +17,18 @@ import safekids.composeapp.generated.resources.logo
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import edu.unicauca.aplimovil.safekids.ui.AppViewModelProvider
-import edu.unicauca.aplimovil.safekids.ui.viewmodel.CourseUiState
-import edu.unicauca.aplimovil.safekids.ui.viewmodel.TeacherProfileViewModel
 import edu.unicauca.aplimovil.safekids.ui.components.BottomNavigationBar
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun DocenteProfileScreen(
     onProfileClick: () -> Unit = {},
-    onHomeClick: () -> Unit = {},
-    viewModel: TeacherProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    onHomeClick: () -> Unit = {}
 ) {
 
     val tipoDocente = "Profesor"
-
-    var nombre by remember { mutableStateOf<String?>(null) }
-    var cedula by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(Unit) {
-        val teacher = viewModel.loadTeacher()
-        teacher?.let {
-            nombre = it.name
-            cedula = it.id
-        }
-    }
+    val nombre = "Pepito Alvarez"
+    val cedula = "1234"
 
     Box(
         modifier = Modifier
@@ -136,8 +120,43 @@ fun DocenteProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            val courses by viewModel.cursos.collectAsState()
-            CourseList(courses)
+            // Lista de cursos
+            Column {
+                val courses = listOf("Algebra", "Biologia", "Etica")
+                val studentCount = listOf(4, 9, 11)
+
+                courses.forEachIndexed { index, course ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                            .background(Color(0xFF8D8782), shape = RoundedCornerShape(8.dp))
+                            .padding(12.dp)
+                    ) {
+                        // Cuadro de color
+                        Box(
+                            modifier = Modifier
+                                .size(60.dp) // Aumentamos el tamaño
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color(0xFF122379)) // azul oscuro
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text(
+                                text = course,
+                                color = Color.White,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 18.sp // Aumento el tamaño de la fuente
+                            )
+                            Text(
+                                text = "${studentCount[index]} Estudiantes",
+                                color = Color.White,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -145,47 +164,3 @@ fun DocenteProfileScreen(
         }
     }
 }
-
-@OptIn(ExperimentalResourceApi::class)
-@Composable
-fun CourseList(cursos: List<CourseUiState>) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.7f)
-            .padding(horizontal = 12.dp)
-    ) {
-        items(cursos) { curso ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-                    .background(Color(0xFF8D8782), shape = RoundedCornerShape(8.dp))
-                    .padding(12.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color(0xFF122379))
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Column {
-                    Text(
-                        text = curso.name,
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 18.sp
-                    )
-                    Text(
-                        text = "${curso.students} Estudiantes",
-                        color = Color.White,
-                        fontSize = 14.sp
-                    )
-                }
-            }
-        }
-    }
-}
-
-

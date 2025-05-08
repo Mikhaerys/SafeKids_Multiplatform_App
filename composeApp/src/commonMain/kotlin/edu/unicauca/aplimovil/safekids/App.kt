@@ -5,9 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.lifecycle.viewmodel.compose.viewModel
-import edu.unicauca.aplimovil.safekids.ui.viewmodel.TeacherProfileViewModel
-import edu.unicauca.aplimovil.safekids.ui.AppViewModelProvider
 import edu.unicauca.aplimovil.safekids.ui.screens.ActividadScreen
 import edu.unicauca.aplimovil.safekids.ui.screens.AcudienteProfileScreen
 import edu.unicauca.aplimovil.safekids.ui.screens.AcudientesScreen
@@ -16,7 +13,6 @@ import edu.unicauca.aplimovil.safekids.ui.screens.DineroScreen
 import edu.unicauca.aplimovil.safekids.ui.screens.DocenteProfileScreen
 import edu.unicauca.aplimovil.safekids.ui.screens.DocenteScreen
 import edu.unicauca.aplimovil.safekids.ui.screens.LoginScreen
-import edu.unicauca.aplimovil.safekids.ui.viewmodel.GuardianProfileViewModel
 
 @Composable
 fun App(modifier: Modifier = Modifier){
@@ -24,15 +20,11 @@ fun App(modifier: Modifier = Modifier){
     NavHost(navController = navController,
         startDestination = Screens.LoginScreen.name) {
         composable(route = Screens.LoginScreen.name){
-            val teacherProfileViewModel: TeacherProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
-            val guardianProfileViewModel: GuardianProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
             LoginScreen(
-                onTeacherClick = { id ->
-                    teacherProfileViewModel.updateUserId(id)
+                onTeacherClick = {
                     navController.navigate(Screens.DocenteScreen.name)
                 },
-                onGuardianClick = { id ->
-                    guardianProfileViewModel.updateUserId(id)
+                onGuardianClick = {
                     navController.navigate(Screens.AcudientesScreen.name)
                 },
                 onDescriptionClick = { navController.navigate(Screens.DescriptionScreen.name) }

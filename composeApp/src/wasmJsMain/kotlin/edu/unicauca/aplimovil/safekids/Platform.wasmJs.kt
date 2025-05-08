@@ -5,5 +5,3 @@ class WasmPlatform: Platform {
 }
 
 actual fun getPlatform(): Platform = WasmPlatform()
-
-actual class PlatformContext

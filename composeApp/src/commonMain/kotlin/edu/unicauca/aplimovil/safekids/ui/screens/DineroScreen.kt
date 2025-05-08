@@ -25,20 +25,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import edu.unicauca.aplimovil.safekids.ui.AppViewModelProvider
-import edu.unicauca.aplimovil.safekids.ui.viewmodel.GuardianMoneyProfileViewModel
-import edu.unicauca.aplimovil.safekids.ui.viewmodel.MoneyUiState
-import edu.unicauca.aplimovil.safekids.ui.viewmodel.StudentUiState
 import edu.unicauca.aplimovil.safekids.ui.components.BottomNavigationBar
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun DineroScreen(
     onProfileClick: () -> Unit = {},
-    onHomeClick: () -> Unit = {},
-    viewModel: GuardianMoneyProfileViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    onHomeClick: () -> Unit = {}
 ) {
 
     var showDialog by remember { mutableStateOf(false) }
@@ -81,8 +74,18 @@ fun DineroScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        val students by viewModel.students.collectAsState()
-        DineroDropdown(students, viewModel)
+        // Sección DINERO
+        Text(
+            text = "DINERO",
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF202B7F), RoundedCornerShape(12.dp))
+                .padding(vertical = 8.dp),
+            textAlign = TextAlign.Center
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -127,12 +130,33 @@ fun DineroScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        val moneyList by viewModel.moneyList.collectAsState()
-        MoneyList(moneyList)
+        // Lista de gastos
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .background(Color(0xFFE0DCDC), RoundedCornerShape(12.dp))
+                .padding(8.dp)
+        ) {
+            items(6) { index ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .padding(vertical = 4.dp)
+                        .background(Color(0xFFB8B0AB), RoundedCornerShape(12.dp)),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Text(
+                        text = "Gasto ${index + 1}",
+                        modifier = Modifier.padding(start = 16.dp),
+                        color = Color.White
+                    )
+                }
+            }
+        }
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Barra inferior
         BottomNavigationBar(onHomeClick = onHomeClick, onProfileClick = onProfileClick)
     }
 
@@ -158,8 +182,7 @@ fun DineroScreen(
             text = {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = "Recarga con PSE",
-                        fontSize = 20.sp,
+                        text = "Por favor, seleccione el método de pago",
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF202B7F)
                     )
@@ -244,117 +267,3 @@ fun DineroScreen(
     }
 
 }
-
-@OptIn(ExperimentalResourceApi::class)
-@Composable
-fun DineroDropdown(students: List<StudentUiState>, viewModel: GuardianMoneyProfileViewModel) {
-    val coroutineScope = rememberCoroutineScope()
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf<String?>(null) }
-    var selectedOptionId by remember { mutableStateOf<String?>(null) }
-
-    // Se declara un modificador para que el DropdownMenu tenga el mismo ancho que el Text
-    val dropdownModifier = Modifier
-        .fillMaxWidth() // Esto asegura que el DropdownMenu tenga el mismo ancho que el texto
-        .background(Color.White)
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentSize(Alignment.TopStart)
-    ) {
-        // Aquí la Text de "DINERO" con el mismo ancho del contenedor
-        Text(
-            text = selectedOption ?: "Seleccione un Estudiante",
-            color = Color.White,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFF202B7F), RoundedCornerShape(12.dp))
-                .clickable { expanded = true }
-                .padding(vertical = 8.dp),
-            textAlign = TextAlign.Center
-        )
-
-        // DropdownMenu con el mismo ancho que la Text
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = dropdownModifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-        ) {
-            students.forEach { student ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            selectedOption = student.name
-                            expanded = false
-                            selectedOptionId = student.student_id
-                            coroutineScope.launch {
-                                viewModel.updateStudentId(student.student_id)
-                            }
-
-                        }
-                        .padding(8.dp)
-                ) {
-                    Text(text = student.name, modifier = Modifier.padding(start = 8.dp))
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalResourceApi::class)
-@Composable
-fun MoneyList(moneyList: List<MoneyUiState>) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(495.dp)
-            .background(Color(0xFFE0DCDC), RoundedCornerShape(12.dp))
-            .padding(8.dp)
-    ) {
-        items(moneyList) { money ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(vertical = 4.dp)
-                    .background(Color(0xFFB8B0AB), RoundedCornerShape(12.dp))
-                    .padding(horizontal = 16.dp), // Para darle padding interno
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Money ID
-                    Text(
-                        text = money.transactionId.toString(),
-                        color = Color.White,
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    // Monto
-                    Text(
-                        text = if (money.amount >= 0) "+$${money.amount}" else "-$${-money.amount}",
-                        color = if (money.amount >= 0) Color.Green else Color.Red,
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.Center
-                    )
-
-                    // Timestamp (alineado a la derecha)
-                    Text(
-                        text = money.transactionDate,
-                        color = Color.White,
-                        modifier = Modifier.weight(1f),
-                        textAlign = TextAlign.End
-                    )
-                }
-            }
-        }
-    }
-}
-

@@ -1,7 +1,6 @@
 package edu.unicauca.aplimovil.safekids.ui.screens
 
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,23 +25,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import edu.unicauca.aplimovil.safekids.ui.AppViewModelProvider
-import edu.unicauca.aplimovil.safekids.ui.viewmodel.LoginViewModel
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun LoginScreen(
-    onTeacherClick: (String)->Unit = {},
-    onGuardianClick: (String)->Unit = {},
-    onSaveClick: ()->Unit = {},
-    onDescriptionClick: ()->Unit = {},
-    viewModel: LoginViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    onTeacherClick: ()->Unit = {},
+    onGuardianClick: ()->Unit = {},
+    onDescriptionClick: ()->Unit = {}
 ) {
-    val coroutineScope = rememberCoroutineScope()
     // Campos de entrada
     var cedula by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -165,12 +156,8 @@ fun LoginScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     OutlinedTextField(
-                        value = viewModel.loginUiState.details.id,
-                        onValueChange = { newValue ->
-                            viewModel.updateUiState(
-                                viewModel.loginUiState.details.copy(id = newValue)
-                            )
-                        },
+                        value = cedula,
+                        onValueChange = { cedula = it },
                         label = {
                             Text("Cedula", color = Color.Black, fontWeight = FontWeight.Bold)
                         },
@@ -188,12 +175,8 @@ fun LoginScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     OutlinedTextField(
-                        value = viewModel.loginUiState.details.password,
-                        onValueChange = { newValue ->
-                            viewModel.updateUiState(
-                                viewModel.loginUiState.details.copy(password = newValue)
-                            )
-                        },
+                        value = password,
+                        onValueChange = { password = it },
                         label = {
                             Text("Password", color = Color.Black, fontWeight = FontWeight.Bold)
                         },
@@ -213,48 +196,36 @@ fun LoginScreen(
 
                     Button(
                         onClick = {
-                            coroutineScope.launch {
                                 if (Docente) {
-                                    val result = viewModel.attemptTeacherLogin()
-                                    if (result != null) {
-                                        onTeacherClick(result.teacher_id)
-                                    } else {
-                                        Log.d("check1a", "Login failed for Teacher")
-                                    }
+                                    onTeacherClick()
                                 } else {
-                                    val result = viewModel.attemptGuardianLogin()
-                                    if (result != null) {
-                                        onGuardianClick(result.guardian_id)
-                                        Log.d("check1b", "Login failed for Guardian")
-                                    }
+                                    onGuardianClick()
                                 }
-                            }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                            shape = RoundedCornerShape(50),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                            ) {
+                            Text(text = "Login", color = Color.White)
                         }
-                        ,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                        shape = RoundedCornerShape(50),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp)
-                    ) {
-                        Text(text = "Login", color = Color.White)
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(100.dp))
-            //Boton para ir a la pantalla de descripcion
-            Button(
-                onClick = onDescriptionClick,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF122379)),
-                shape = RoundedCornerShape(50),
-                modifier = Modifier
-                    .width(250.dp)
-                    .height(48.dp)
-            ) {
-                Text(text = "Description", color = Color.White)
+                Spacer(modifier = Modifier.height(100.dp))
+                //Boton para ir a la pantalla de descripcion
+                Button(
+                    onClick = onDescriptionClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF122379)),
+                    shape = RoundedCornerShape(50),
+                    modifier = Modifier
+                        .width(250.dp)
+                        .height(48.dp)
+                ) {
+                    Text(text = "Description", color = Color.White)
+                }
             }
         }
     }
-}
 
