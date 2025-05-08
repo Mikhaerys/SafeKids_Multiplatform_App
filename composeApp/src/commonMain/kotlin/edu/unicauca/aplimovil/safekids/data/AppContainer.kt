@@ -1,7 +1,6 @@
-
 package edu.unicauca.aplimovil.safekids.data
 
-import android.content.Context
+import edu.unicauca.aplimovil.safekids.PlatformContext
 
 /**
  * App container for Dependency injection.
@@ -20,39 +19,39 @@ interface AppContainer {
 /**
  * [AppContainer] implementation that provides instance of [OfflineItemsRepository]
  */
-class AppDataContainer(private val context: Context) : AppContainer {
+class AppDataContainer(private val platformContext: PlatformContext) : AppContainer {
     /**
      * Implementation for [ItemsRepository]
      */
     override val itemsRepository: ItemsRepository by lazy {
-        OfflineItemsRepository(InventoryDatabase.getDatabase(context).itemDao())
+        OfflineItemsRepository(getDatabase(platformContext).itemDao())
     }
 
     override val teachersRepository: TeachersRepository by lazy {
-        OfflineTeachersRepository(InventoryDatabase.getDatabase(context).teacherDao())
+        OfflineTeachersRepository(getDatabase(platformContext).teacherDao())
     }
 
     override val coursesRepository: CoursesRepository by lazy {
-        OfflineCoursesRepository(InventoryDatabase.getDatabase(context).courseDao())
+        OfflineCoursesRepository(getDatabase(platformContext).courseDao())
     }
 
     override val guardiansRepository: GuardiansRepository by lazy {
-        OfflineGuardiansRepository(InventoryDatabase.getDatabase(context).guardianDao())
+        OfflineGuardiansRepository(getDatabase(platformContext).guardianDao())
     }
 
     override val studentsRepository: StudentsRepository by lazy {
-        OfflineStudentsRepository(InventoryDatabase.getDatabase(context).studentDao())
+        OfflineStudentsRepository(getDatabase(platformContext).studentDao())
     }
 
     override val studentGuardiansRepository: StudentGuardiansRepository by lazy {
-        OfflineStudentGuardiansRepository(InventoryDatabase.getDatabase(context).studentGuardianDao())
+        OfflineStudentGuardiansRepository(getDatabase(platformContext).studentGuardianDao())
     }
 
     override val studentCoursesRepository: StudentCoursesRepository by lazy {
-        OfflineStudentCoursesRepository(InventoryDatabase.getDatabase(context).studentCourseDao())
+        OfflineStudentCoursesRepository(getDatabase(platformContext).studentCourseDao())
     }
 
     override val moneyRepository: MoneyRepository by lazy {
-        OfflineMoneyRepository(InventoryDatabase.getDatabase(context).moneyDao())
+        OfflineMoneyRepository(getDatabase(platformContext).moneyDao())
     }
 }

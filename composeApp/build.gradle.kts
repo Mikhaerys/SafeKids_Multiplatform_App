@@ -54,6 +54,7 @@ kotlin {
     }
     
     sourceSets {
+        val room_version = "2.7.1"
         val desktopMain by getting
         
         androidMain.dependencies {
@@ -61,12 +62,10 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            val room_version = "2.7.1"
             implementation("androidx.room:room-gradle-plugin:$room_version")
             implementation("androidx.room:room-compiler:$room_version")
             implementation("androidx.room:room-runtime:$room_version")
             implementation("androidx.sqlite:sqlite-bundled")
-
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -80,7 +79,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
-
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -114,6 +112,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+
+configurations.all {
+    exclude(group = "com.intellij", module = "annotations")
 }
 
 dependencies {

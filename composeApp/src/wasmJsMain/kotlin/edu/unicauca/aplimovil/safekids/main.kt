@@ -6,6 +6,7 @@ import kotlinx.browser.document
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
+    SafeKidsApplication.initialize(PlatformContext()) // Initialize SafeKidsApplication
     ComposeViewport(document.body!!) {
         App()
     }

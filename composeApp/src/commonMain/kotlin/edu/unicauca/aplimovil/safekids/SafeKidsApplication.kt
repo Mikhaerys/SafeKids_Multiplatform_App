@@ -3,15 +3,14 @@ package edu.unicauca.aplimovil.safekids
 import edu.unicauca.aplimovil.safekids.data.AppContainer
 import edu.unicauca.aplimovil.safekids.data.AppDataContainer
 
-class InventoryApplication : Application() {
+object SafeKidsApplication {
 
-    /**
-     * AppContainer instance used by the rest of classes to obtain dependencies
-     */
     lateinit var container: AppContainer
+        private set
 
-    override fun onCreate() {
-        super.onCreate()
-        container = AppDataContainer(this)
+    fun initialize(platformContext: PlatformContext) {
+        if (!::container.isInitialized) {
+            container = AppDataContainer(platformContext)
+        }
     }
 }

@@ -1,11 +1,8 @@
 package edu.unicauca.aplimovil.safekids.ui
 
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import edu.unicauca.aplimovil.safekids.InventoryApplication
-import edu.unicauca.aplimovil.safekids.data.MoneyRepository
+import edu.unicauca.aplimovil.safekids.SafeKidsApplication
 import edu.unicauca.aplimovil.safekids.ui.viewmodel.GuardianMoneyProfileViewModel
 import edu.unicauca.aplimovil.safekids.ui.viewmodel.GuardianProfileViewModel
 import edu.unicauca.aplimovil.safekids.ui.viewmodel.ItemEntryViewModel
@@ -19,33 +16,25 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         // Initializer for ItemEntryViewModel
         initializer {
-            ItemEntryViewModel(inventoryApplication().container.itemsRepository)
+            ItemEntryViewModel(SafeKidsApplication.container.itemsRepository)
         }
         initializer {
-            LoginViewModel(inventoryApplication().container.guardiansRepository,
-                inventoryApplication().container.teachersRepository)
+            LoginViewModel(SafeKidsApplication.container.guardiansRepository,
+                SafeKidsApplication.container.teachersRepository)
         }
         initializer {
-            TeacherProfileViewModel(inventoryApplication().container.guardiansRepository,
-                inventoryApplication().container.teachersRepository,
-                inventoryApplication().container.studentCoursesRepository)
+            TeacherProfileViewModel(SafeKidsApplication.container.guardiansRepository,
+                SafeKidsApplication.container.teachersRepository,
+                SafeKidsApplication.container.studentCoursesRepository)
         }
         initializer {
-            GuardianProfileViewModel(inventoryApplication().container.guardiansRepository,
-                inventoryApplication().container.studentGuardiansRepository)
+            GuardianProfileViewModel(SafeKidsApplication.container.guardiansRepository,
+                SafeKidsApplication.container.studentGuardiansRepository)
         }
         initializer {
-            GuardianMoneyProfileViewModel(inventoryApplication().container.guardiansRepository,
-                inventoryApplication().container.studentGuardiansRepository,
-                inventoryApplication().container.moneyRepository)
+            GuardianMoneyProfileViewModel(SafeKidsApplication.container.guardiansRepository,
+                SafeKidsApplication.container.studentGuardiansRepository,
+                SafeKidsApplication.container.moneyRepository)
         }
-
     }
 }
-
-/**
- * Extension function to queries for [Application] object and returns an instance of
- * [InventoryApplication].
- */
-fun CreationExtras.inventoryApplication(): InventoryApplication =
-    (this[AndroidViewModelFactory.APPLICATION_KEY] as InventoryApplication)
